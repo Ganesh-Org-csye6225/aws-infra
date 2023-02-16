@@ -1,7 +1,12 @@
 # AWS-Infra
 
 ## How to start the Project 
-    - terraform apply
+    - terraform init
+    - terraform fmt
+    - terraform plan -var-file=dev.tfvars
+    - terraform apply -var-file=dev.tfvars
+    - terraform destroy -var-file=dev.tfvars
+  
 ## Project_Details
     - Iac of AWS cloud setup
     - Creates 1 VPC in the region of our choice
