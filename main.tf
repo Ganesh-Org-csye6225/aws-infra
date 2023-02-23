@@ -108,10 +108,10 @@ resource "aws_security_group" "application" {
     cidr_blocks = [var.security_cidr]
   }
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = [var.security_cidr]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.security_cidr]
   }
 
   tags = {
@@ -121,12 +121,12 @@ resource "aws_security_group" "application" {
 
 
 resource "aws_instance" "template_ami" {
-  ami                     = var.ami_id
-  instance_type           = var.instance_type
-  subnet_id               = aws_subnet.public[1].id
-  key_name                = var.key_name
+  ami                         = var.ami_id
+  instance_type               = var.instance_type
+  subnet_id                   = aws_subnet.public[1].id
+  key_name                    = var.key_name
   associate_public_ip_address = true
-  disable_api_termination = false
+  disable_api_termination     = false
 
   vpc_security_group_ids = [
     aws_security_group.application.id
