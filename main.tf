@@ -79,6 +79,74 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private.id
 }
 
+resource "aws_security_group" "application" {
+  name        = "application"
+  description = "Security group for the Webapp application"
+  vpc_id      = aws_vpc.vpc.id
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [var.security_cidr]
+  }
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.security_cidr]
+  }
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [var.security_cidr]
+  }
+  ingress {
+    from_port   = 9234
+    to_port     = 9234
+    protocol    = "tcp"
+    cidr_blocks = [var.security_cidr]
+  }
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = [var.security_cidr]
+  }
+
+  tags = {
+    Name = "application"
+  }
+}
+
+
+resource "aws_instance" "template_ami" {
+  ami                     = var.ami_id
+  instance_type           = var.instance_type
+  subnet_id               = aws_subnet.public[1].id
+  key_name                = var.key_name
+  associate_public_ip_address = true
+  disable_api_termination = false
+
+  vpc_security_group_ids = [
+    aws_security_group.application.id
+  ]
+  root_block_device {
+    delete_on_termination = true
+    volume_size           = 50
+    volume_type           = "gp2"
+  }
+  tags = {
+    Name = "webapp_service"
+  }
+
+}
+
+
+output "ec2instance" {
+  value = aws_instance.template_ami.id
+}
+
 # Data Sources
 data "aws_availability_zones" "available" {}
 
