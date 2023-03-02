@@ -138,6 +138,12 @@ resource "aws_security_group" "database" {
     protocol        = "tcp"
     security_groups = [aws_security_group.application.id]
   }
+   egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.security_cidr]
+  }
 
   tags = {
     Name = "database"
@@ -195,18 +201,31 @@ resource "aws_db_parameter_group" "postgres_11" {
   name   = "rds-pg-${var.name_prefix}"
   family = "postgres${var.db_version}"
   parameter {
-    name  = "character_set_server"
-    value = "utf8"
+    apply_method = "immediate"
+    name         = "lc_messages"
+    value        = "en_US.UTF-8"
   }
   parameter {
-    name  = "character_set_client"
-    value = "utf8"
+    apply_method = "immediate"
+    name         = "lc_monetary"
+    value        = "en_US.UTF-8"
   }
   parameter {
-    name         = "performance_schema"
+    apply_method = "immediate"
+    name         = "lc_numeric"
+    value        = "en_US.UTF-8"
+  }
+  parameter {
+    apply_method = "immediate"
+    name         = "lc_time"
+    value        = "en_US.UTF-8"
+  }
+  parameter {
+    apply_method = "immediate"
+    name         = "autovacuum"
     value        = "1"
-    apply_method = "pending-reboot"
   }
+
 }
 
 resource "aws_iam_policy" "policy" {
@@ -247,6 +266,7 @@ resource "aws_iam_role_policy_attachment" "webapps3_policy_attachment" {
 }
 
 resource "aws_db_instance" "mydb" {
+  allocated_storage      = var.db_storage
   engine                 = var.db_engine
   engine_version         = var.db_version
   instance_class         = var.db_instance_class
@@ -257,9 +277,10 @@ resource "aws_db_instance" "mydb" {
   db_name                = var.db_name
   port                   = var.db_port
   publicly_accessible    = false
+  skip_final_snapshot = true
   vpc_security_group_ids = ["${aws_security_group.database.id}"]
   db_subnet_group_name   = aws_db_subnet_group.private_group.name
-  parameter_group_name   = aws_db_parameter_group.postgres_11
+  parameter_group_name   = aws_db_parameter_group.postgres_11.name
 }
 
 resource "aws_iam_instance_profile" "iam_profile" {
@@ -287,20 +308,20 @@ resource "aws_instance" "template_ami" {
 
   user_data = <<EOF
 #!/bin/bash
-cd /home/ec2user || return
-touch application.properties
-echo "aws.region=${var.aws_region}" >> application.properties
-echo "aws.s3.bucket=${aws_s3_bucket.s3b.bucket}" >> application.properties
+cd /home/ec2-user || return
+touch custom.properties
+echo "aws.region=${var.aws_region}" >> custom.properties
+echo "aws.s3.bucket=${aws_s3_bucket.s3b.bucket}" >> custom.properties
 
-echo "spring.datasource.driver-class-name=org.postgresql.Driver" >> application.properties
-echo "spring.datasource.jdbc-url=jdbc:postgres://${aws_db_instance.mydb.endpoint}/${aws_db_instance.mydb.db_name}" >> application.properties
-echo "spring.datasource.username=${aws_db_instance.mydb.username}" >> application.properties
-echo "spring.datasource.password=${aws_db_instance.mydb.password}" >> application.properties
+echo "spring.datasource.driver-class-name=org.postgresql.Driver" >> custom.properties
+echo "spring.datasource.url=jdbc:postgresql://${aws_db_instance.mydb.endpoint}/${aws_db_instance.mydb.db_name}" >> custom.properties
+echo "spring.datasource.username=${aws_db_instance.mydb.username}" >> custom.properties
+echo "spring.datasource.password=${aws_db_instance.mydb.password}" >> custom.properties
 
-echo "spring.datasource.dbcp2.test-while-idle=true" >> application.properties
-echo "spring.jpa.hibernate.ddl-auto=update" >> application.properties
-echo "spring.main.allow-circular-references=true" >> application.properties
-echo "server.port=9234" >> application.properties
+echo "spring.datasource.dbcp2.test-while-idle=true" >> custom.properties
+echo "spring.jpa.hibernate.ddl-auto=update" >> custom.properties
+echo "spring.main.allow-circular-references=true" >> custom.properties
+echo "server.port=9234" >> custom.properties
   EOF
 
   tags = {
