@@ -14,7 +14,7 @@ variable "security_cidr" {
   default = "0.0.0.0/0"
 }
 variable "ami_id" {
-  default = "ami-04c352314111a4591"
+  default = "ami-0e1b10c04f850acd7"
 }
 variable "instance_type" {
   default = "t2.micro"
@@ -26,7 +26,7 @@ variable "db_username" {
   default = "csye6225"
 }
 variable "db_password" {
-  default = "Ganesh@1234"
+  default = "Ganesh*1234"
 }
 variable "db_name" {
   default = "csye6225"
@@ -41,8 +41,11 @@ variable "db_instance_class" {
   default = "db.t3.micro"
 }
 variable "db_version" {
-  default = "11.0"
+  default = "11"
 }
 variable "db_engine" {
   default = "postgres"
+}
+variable "db_storage" {
+  default = 10
 }
