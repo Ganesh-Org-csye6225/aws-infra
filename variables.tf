@@ -22,4 +22,27 @@ variable "instance_type" {
 variable "key_name" {
   default = "ec2"
 }
-
+variable "db_username" {
+  default = "csye6225"
+}
+variable "db_password" {
+  default = "Ganesh@1234"
+}
+variable "db_name" {
+  default = "csye6225"
+}
+variable "db_identifier" {
+  default = "csye6225"
+}
+variable "db_port" {
+  default = 5432
+}
+variable "db_instance_class" {
+  default = "db.t3.micro"
+}
+variable "db_version" {
+  default = "11.0"
+}
+variable "db_engine" {
+  default = "postgres"
+}
