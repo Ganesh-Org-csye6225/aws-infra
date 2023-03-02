@@ -138,7 +138,7 @@ resource "aws_security_group" "database" {
     protocol        = "tcp"
     security_groups = [aws_security_group.application.id]
   }
-   egress {
+  egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -277,7 +277,7 @@ resource "aws_db_instance" "mydb" {
   db_name                = var.db_name
   port                   = var.db_port
   publicly_accessible    = false
-  skip_final_snapshot = true
+  skip_final_snapshot    = true
   vpc_security_group_ids = ["${aws_security_group.database.id}"]
   db_subnet_group_name   = aws_db_subnet_group.private_group.name
   parameter_group_name   = aws_db_parameter_group.postgres_11.name
