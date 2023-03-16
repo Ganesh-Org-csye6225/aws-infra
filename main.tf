@@ -192,9 +192,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "s3b_encryption" {
 
 }
 resource "aws_s3_bucket_public_access_block" "s3_block" {
-  bucket              = aws_s3_bucket.s3b.id
-  block_public_acls   = true
-  block_public_policy = true
+  bucket                  = aws_s3_bucket.s3b.id
+  block_public_acls       = true
+  block_public_policy     = true
+  restrict_public_buckets = true
 }
 
 resource "aws_db_parameter_group" "postgres_11" {
@@ -328,6 +329,18 @@ echo "server.port=9234" >> custom.properties
     Name = "webapp_service"
   }
 
+}
+
+data "aws_route53_zone" "zone_data" {
+  name = var.domain_name
+}
+
+resource "aws_route53_record" "www" {
+  zone_id = data.aws_route53_zone.zone_data.zone_id
+  name    = data.aws_route53_zone.zone_data.name
+  type    = "A"
+  ttl     = "60"
+  records = [aws_instance.template_ami.public_ip]
 }
 
 output "ec2instance" {
