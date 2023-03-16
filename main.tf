@@ -196,6 +196,7 @@ resource "aws_s3_bucket_public_access_block" "s3_block" {
   block_public_acls       = true
   block_public_policy     = true
   restrict_public_buckets = true
+  ignore_public_acls      = true
 }
 
 resource "aws_db_parameter_group" "postgres_11" {
