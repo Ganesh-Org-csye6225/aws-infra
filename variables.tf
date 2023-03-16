@@ -49,3 +49,6 @@ variable "db_engine" {
 variable "db_storage" {
   default = 10
 }
+variable "domain_name" {
+  default = "dev.ganeshvasa.me"
+}
