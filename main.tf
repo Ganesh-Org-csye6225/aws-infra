@@ -267,6 +267,13 @@ resource "aws_iam_role_policy_attachment" "webapps3_policy_attachment" {
   role       = aws_iam_role.ec2_role.name
 }
 
+resource "aws_iam_policy_attachment" "webapp_cloudwatch_policy_attachment" {
+  name       = "webapp_cloudwatch_policy_attachment"
+  roles       = [aws_iam_role.ec2_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
+
 resource "aws_db_instance" "mydb" {
   allocated_storage      = var.db_storage
   engine                 = var.db_engine
@@ -310,6 +317,14 @@ resource "aws_instance" "template_ami" {
 
   user_data = <<EOF
 #!/bin/bash
+sudo cp /tmp/cloudwatchagent_config.json /opt/cloudwatchagent_config.json
+sudo chmod 770 /opt/cloudwatchagent_config.json
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+ -a fetch-config \
+ -m ec2 \
+ -c file:/opt/cloudwatchagent_config.json \
+ -s
+
 cd /home/ec2-user || return
 touch custom.properties
 echo "aws.region=${var.aws_region}" >> custom.properties
@@ -324,6 +339,11 @@ echo "spring.datasource.dbcp2.test-while-idle=true" >> custom.properties
 echo "spring.jpa.hibernate.ddl-auto=update" >> custom.properties
 echo "spring.main.allow-circular-references=true" >> custom.properties
 echo "server.port=9234" >> custom.properties
+echo "logging.file.path=/home/ec2-user" >> custom.properties
+echo "logging.file.name=/home/ec2-user/csye6225logs.log" >> custom.properties
+echo "publish.metrics=true" >> custom.properties
+echo "metrics.server.hostname=localhost" >> custom.properties
+echo "metrics.server.port=8125" >> custom.properties
   EOF
 
   tags = {
