@@ -26,7 +26,6 @@ variable "db_username" {
   default = "csye6225"
 }
 variable "db_password" {
-  default = "Ganesh*1234"
 }
 variable "db_name" {
   default = "csye6225"
