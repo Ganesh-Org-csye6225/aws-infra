@@ -51,3 +51,11 @@ variable "db_storage" {
 variable "domain_name" {
   default = "dev.ganeshvasa.me"
 }
+
+variable "cpu_upper_limit" {
+  default = "2"
+}
+
+variable "cpu_lower_limit" {
+  default = "1"
+}
