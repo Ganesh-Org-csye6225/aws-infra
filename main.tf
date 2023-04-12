@@ -284,27 +284,6 @@ resource "aws_security_group" "load_balancer" {
   }
 }
 
-# resource "aws_kms_key" "rds_kmskey" {
-#   description             = "KMS key for rds"
-#   deletion_window_in_days = 7
-#   policy = <<EOF
-#   {
-#     "Id": "key-consolepolicy-3",
-#     "Version": "2012-10-17",
-#     "Statement": [
-#         {
-#             "Sid": "Enable IAM User Permissions",
-#             "Effect": "Allow",
-#             "Principal": {
-#                 "AWS": "arn:aws:iam::094036824942:role/EC2-CSYE6225"
-#             },
-#             "Action": "kms:*",
-#             "Resource": "*"
-#         }
-#     ]
-# }
-# EOF
-# }
 
 resource "aws_kms_key" "rds_kmskey" {
   description             = "rds key"
@@ -316,7 +295,7 @@ resource "aws_kms_key" "rds_kmskey" {
         Sid    = "Enable IAM User Permissions",
         Effect = "Allow",
         Principal = {
-          "AWS" : "arn:aws:iam::094036824942:root"
+          "AWS" : "arn:aws:iam::287953200237:root"
         },
         Action   = "kms:*",
         Resource = "*"
@@ -325,7 +304,7 @@ resource "aws_kms_key" "rds_kmskey" {
         Sid    = "Allow use of the key",
         Effect = "Allow",
         Principal = {
-          "AWS" : "arn:aws:iam::094036824942:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+          "AWS" : "arn:aws:iam::287953200237:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
         },
         Action = [
           "kms:Encrypt",
@@ -340,7 +319,7 @@ resource "aws_kms_key" "rds_kmskey" {
         Sid    = "Allow attachment of persistent resources",
         Effect = "Allow",
         Principal = {
-          "AWS" : "arn:aws:iam::094036824942:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+          "AWS" : "arn:aws:iam::287953200237:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
         },
         Action = [
           "kms:CreateGrant",
@@ -428,7 +407,7 @@ resource "aws_kms_key" "ec2_ebs_key" {
         Sid    = "Enable IAM User Permissions",
         Effect = "Allow",
         Principal = {
-          "AWS" : "arn:aws:iam::094036824942:root"
+          "AWS" : "arn:aws:iam::287953200237:root"
         },
         Action   = "kms:*",
         Resource = "*"
@@ -437,7 +416,7 @@ resource "aws_kms_key" "ec2_ebs_key" {
         Sid    = "Allow use of the key",
         Effect = "Allow",
         Principal = {
-          "AWS" : "arn:aws:iam::094036824942:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+          "AWS" : "arn:aws:iam::287953200237:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
         },
         Action = [
           "kms:Encrypt",
@@ -452,7 +431,7 @@ resource "aws_kms_key" "ec2_ebs_key" {
         Sid    = "Allow attachment of persistent resources",
         Effect = "Allow",
         Principal = {
-          "AWS" : "arn:aws:iam::094036824942:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+          "AWS" : "arn:aws:iam::287953200237:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
         },
         Action = [
           "kms:CreateGrant",
@@ -618,7 +597,7 @@ resource "aws_lb_listener" "lb_listener" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:acm:us-east-1:${var.account_id}:certificate/e722ab63-a1d0-4297-a433-9830d0e92f4a"
+  certificate_arn   = "arn:aws:acm:us-east-1:287953200237:certificate/3d64e5e3-58fe-4421-a54a-4ffb3b13f97c"
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.alb_tg.arn
