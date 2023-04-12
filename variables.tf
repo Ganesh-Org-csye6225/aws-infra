@@ -53,13 +53,13 @@ variable "domain_name" {
 }
 
 variable "cpu_upper_limit" {
-  default = "2"
+  default = "5"
 }
 
 variable "cpu_lower_limit" {
-  default = "1"
+  default = "3"
 }
 
 variable "account_id" {
-  default = "094036824942"
+  default = "287953200237"
 }
