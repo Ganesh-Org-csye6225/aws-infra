@@ -59,3 +59,7 @@ variable "cpu_upper_limit" {
 variable "cpu_lower_limit" {
   default = "1"
 }
+
+variable "account_id" {
+  default = "094036824942"
+}
